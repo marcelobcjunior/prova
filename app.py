@@ -5,7 +5,37 @@ app = Flask(__name__)
 
 @app.route('/')
 def pagina_inicial():
-    # Rota raiz: exibida quando o usuário acessa http://localhost:5000/
+    if request.method == 'POST':
+        nome = request.form.get ('nome')
+        peso = request.form.get ('peso')
+        altura = request.form.get ('altura') 
+        
+        nome = nome
+        peso = float(peso)
+        altura = float(altura)
+
+        erros = []
+        if not nome:
+            erros.append('Nome obrigatório')
+        elif len(nome) < 3:
+            erros.append('Mínimo 3 caracteres.')
+        
+        if not peso:
+            erros.append('Peso obrigatório')
+        if peso <= 0:
+            erros.append('Peso tem que ser maior que 0')
+
+        if not altura:
+            erros.append('Altura obrigatória')
+        if altura < 0.5 and altura > 2.5:
+            erros.append('Altura precisa ser entre 0,5 e 2,5')
+
+        if erros: 
+            for erros in erros :
+                flash(erro, 'danger')
+
+        return render_template ('index.html', erros = erros)
+
     return '''
         <h1>Sistema de Gestão</h1>
         <p>Bem-vindo ao sistema.</p>
